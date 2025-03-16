@@ -11,16 +11,16 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ConvertCurrencyUseCaseTest {
+public class GetAllConvertCurrencyUseCaseTest {
 
     @InjectMocks
-    private ConvertCurrencyUseCase convertCurrencyUseCase;
-
-    @Mock
-    private ExchangeRateClient exchangeRateClient;
+    private GetAllConvertCurrencyUseCase getAllConvertCurrencyUseCase;
 
     @Mock
     private CurrencyConversionService currencyConversionService;
@@ -43,13 +43,13 @@ public class ConvertCurrencyUseCaseTest {
         conversion.setRate(rate);
         conversion.setConversionDate(now);
 
-        Mockito.when(exchangeRateClient.getRate(from, to)).thenReturn(rate);
-        Mockito.when(currencyConversionService.save(conversion)).thenReturn(conversion);
+        Mockito.when(currencyConversionService.findAll()).thenReturn(Arrays.asList(conversion));
 
-        CurrencyConversion result = convertCurrencyUseCase.execute(from, to);
+        List<CurrencyConversion> result = getAllConvertCurrencyUseCase.execute();
 
-        assertEquals(from, result.getFromCurrency());
-        assertEquals(to, result.getToCurrency());
-        assertEquals(rate, result.getRate());
+        assertNotNull(result);
+        assertEquals(from, result.get(0).getFromCurrency());
+        assertEquals(to, result.get(0).getToCurrency());
+        assertEquals(rate, result.get(0).getRate());
     }
 }

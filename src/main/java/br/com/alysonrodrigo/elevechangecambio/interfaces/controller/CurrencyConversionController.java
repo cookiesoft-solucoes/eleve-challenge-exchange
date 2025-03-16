@@ -2,6 +2,7 @@ package br.com.alysonrodrigo.elevechangecambio.interfaces.controller;
 
 import br.com.alysonrodrigo.elevechangecambio.application.dto.CurrencyConversionDTO;
 import br.com.alysonrodrigo.elevechangecambio.application.usecase.ConvertCurrencyUseCase;
+import br.com.alysonrodrigo.elevechangecambio.application.usecase.GetAllConvertCurrencyUseCase;
 import br.com.alysonrodrigo.elevechangecambio.interfaces.mapper.CurrencyConversionMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,15 +15,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/conversion")
 @Slf4j
 public class CurrencyConversionController {
 
     private final ConvertCurrencyUseCase convertCurrencyUseCase;
+    private final GetAllConvertCurrencyUseCase getAllConvertCurrencyUseCase;
 
-    public CurrencyConversionController(ConvertCurrencyUseCase convertCurrencyUseCase) {
+    public CurrencyConversionController(ConvertCurrencyUseCase convertCurrencyUseCase,
+                                        GetAllConvertCurrencyUseCase getAllConvertCurrencyUseCase) {
         this.convertCurrencyUseCase = convertCurrencyUseCase;
+        this.getAllConvertCurrencyUseCase = getAllConvertCurrencyUseCase;
     }
 
     @Operation(summary = "Convert currency", description = "Converts a specified amount from one currency to another using the current exchange rate.")
@@ -41,6 +48,20 @@ public class CurrencyConversionController {
         var dto = CurrencyConversionMapper.toDTO(result);
         log.info("Successfully converted currency from '{}' to '{}'. Conversion rate: {}", from, to, dto.getRate());
         return dto;
+    }
+
+    @Operation(summary = "Get all currency conversions", description = "Retrieves all stored currency conversions.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "List retrieved successfully",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = CurrencyConversionDTO.class)))
+    })
+    @GetMapping("/all")
+    public List<CurrencyConversionDTO> getAllConversions() {
+        log.info("Fetching all currency conversion records");
+        return getAllConvertCurrencyUseCase.execute().stream()
+                .map(CurrencyConversionMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
 }

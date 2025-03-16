@@ -4,6 +4,8 @@ import br.com.alysonrodrigo.elevechangecambio.domain.model.CurrencyConversion;
 import br.com.alysonrodrigo.elevechangecambio.domain.repository.CurrencyConversionRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CurrencyConversionService {
 
@@ -15,5 +17,9 @@ public class CurrencyConversionService {
 
     public CurrencyConversion save(CurrencyConversion conversion) {
         return currencyConversionRepository.save(conversion);
+    }
+
+    public List<CurrencyConversion> findAll() {
+        return currencyConversionRepository.findAll();
     }
 }

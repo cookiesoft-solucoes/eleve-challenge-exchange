@@ -9,6 +9,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CurrencyConversionServiceTest {
@@ -26,14 +31,28 @@ public class CurrencyConversionServiceTest {
 
     @Test
     public void testSave() {
-        // Arrange
         CurrencyConversion conversion = new CurrencyConversion();
         Mockito.when(currencyConversionRepository.save(conversion)).thenReturn(conversion);
-        // Act
         CurrencyConversion result = currencyConversionService.save(conversion);
 
-        // Assert
         assertNotNull(result);
+    }
+
+    @Test
+    public void testFindAll() {
+        CurrencyConversion conversion = new CurrencyConversion();
+        conversion.setToCurrency("BRL");
+        conversion.setFromCurrency("USD");
+        conversion.setRate(5.25);
+        conversion.setConversionDate(LocalDateTime.now());
+        Mockito.when(currencyConversionRepository.findAll()).thenReturn(List.of(conversion));
+
+        List<CurrencyConversion> currencyConversions = currencyConversionService.findAll();
+
+        assertNotNull(currencyConversions);
+        assertEquals(1, currencyConversions.size());
+        assertEquals("BRL", currencyConversions.get(0).getToCurrency());
+
     }
 
 

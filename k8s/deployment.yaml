@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elevechallengeexchange-deployment
+  labels:
+    app: elevechallengeexchange
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: elevechallengeexchange
+  template:
+    metadata:
+      labels:
+        app: elevechallengeexchange
+    spec:
+      containers:
+        - name: elevechallengeexchange
+          image: docker.io/alysonrodrigo/elevechallengeexchange:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"

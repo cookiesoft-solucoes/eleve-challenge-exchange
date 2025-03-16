@@ -1,0 +1,21 @@
+services:
+  elevechallengeexchange:
+    image: alysonrodrigo/elevechallengeexchange:latest
+    container_name: elevechallengeexchange
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      JDBC_DATABASE_URL: jdbc:h2:mem:proddb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+      JDBC_DATABASE_USERNAME: sa
+      JDBC_DATABASE_PASSWORD:
+      JDBC_DATABASE_DRIVER: org.h2.Driver
+      JPA_DATABASE_PLATFORM: org.hibernate.dialect.H2Dialect
+      JPA_HIBERNATE_DDL_AUTO: none
+      JPA_SHOW_SQL: "true"
+      FLYWAY_ENABLED: "true"
+      FLYWAY_LOCATIONS: classpath:db/migration
+      FLYWAY_BASELINE_ON_MIGRATE: "true"
+      EXCHANGERATE_API_BASE_URL: https://v6.exchangerate-api.com/v6
+      EXCHANGERATE_API_KEY: 9a9bbb26e7401d67e276fdf2
+

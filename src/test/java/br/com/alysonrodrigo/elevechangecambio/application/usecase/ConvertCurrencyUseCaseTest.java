@@ -3,6 +3,8 @@ package br.com.alysonrodrigo.elevechangecambio.application.usecase;
 import br.com.alysonrodrigo.elevechangecambio.application.service.CurrencyConversionService;
 import br.com.alysonrodrigo.elevechangecambio.domain.model.CurrencyConversion;
 import br.com.alysonrodrigo.elevechangecambio.infrastructure.api.ExchangeRateClient;
+import br.com.alysonrodrigo.elevechangecambio.infrastructure.api.model.ExchangeRateResponse;
+import br.com.alysonrodrigo.elevechangecambio.infrastructure.api.service.ExchangeRateCamelService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,11 +15,15 @@ import org.mockito.MockitoAnnotations;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 
 public class ConvertCurrencyUseCaseTest {
 
     @InjectMocks
     private ConvertCurrencyUseCase convertCurrencyUseCase;
+
+    @Mock
+    private ExchangeRateCamelService exchangeRateCamelService;
 
     @Mock
     private ExchangeRateClient exchangeRateClient;
@@ -37,14 +43,19 @@ public class ConvertCurrencyUseCaseTest {
         double rate = 5.25;
         LocalDateTime now = LocalDateTime.now();
 
+        ExchangeRateResponse response = new ExchangeRateResponse();
+        response.setBase_code(from);
+        response.setTarget_code(to);
+        response.setConversion_rate(rate);
+
         CurrencyConversion conversion = new CurrencyConversion();
         conversion.setFromCurrency(from);
         conversion.setToCurrency(to);
         conversion.setRate(rate);
         conversion.setConversionDate(now);
 
-        Mockito.when(exchangeRateClient.getRate(from, to)).thenReturn(rate);
-        Mockito.when(currencyConversionService.save(conversion)).thenReturn(conversion);
+        Mockito.when(exchangeRateCamelService.fetchRate(from, to)).thenReturn(response);
+        Mockito.when(currencyConversionService.save(any(CurrencyConversion.class))).thenReturn(conversion);
 
         CurrencyConversion result = convertCurrencyUseCase.execute(from, to);
 

@@ -45,6 +45,11 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
     implementation 'org.springframework.boot:spring-boot-starter-logging'
     implementation 'com.datadoghq:dd-java-agent:1.16.0'
+
+    implementation 'org.apache.camel.springboot:camel-spring-boot-starter:4.4.0'
+    implementation 'org.apache.camel.springboot:camel-http-starter:4.4.0'
+    implementation 'org.apache.camel.springboot:camel-jackson-starter:4.4.0'
+    testImplementation 'org.apache.camel:camel-test-junit5:4.4.0'
 }
 
 tasks.named('test') {
